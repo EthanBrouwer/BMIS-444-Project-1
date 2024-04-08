@@ -1,0 +1,130 @@
+>>>malloy
+// Enter Malloy here
+source: smoking_data is duckdb.table('/Users/ethanbrouwer/Library/CloudStorage/OneDrive-GonzagaUniversity/Spring 2024/BMIS 444/Project1 Data/smoking.csv') extend {
+    measure: 
+        sample_count is count()
+
+}
+>>>malloy
+//Sample Table
+run: smoking_data -> {
+    select: *
+    limit:10 }
+>>>malloy
+//What % of the sample smoke
+run: smoking_data -> {
+    group_by: smoke
+    aggregate: 
+        sample_count
+        # percent
+        percent_of_smokers is sample_count / all(sample_count)
+
+ 
+}
+>>>malloy
+//What % of smokers are men vs women?
+run: smoking_data -> {
+    group_by: gender
+    where: smoke = 'Yes'
+    aggregate: 
+        sample_count
+        TotalSmoker_samples is all(sample_count)
+        # percent
+        percent_of_smokers is sample_count / all(sample_count)
+        }
+>>>malloy
+// How does income level holds the largest percentage of smokers?
+run: smoking_data -> {
+    group_by: gross_income
+    where: smoke = 'Yes'
+    aggregate: 
+        sample_count
+        TotalSmoker_samples is all(sample_count)
+        # percent
+        percent_of_smokers is sample_count / all(sample_count)
+    order_by: percent_of_smokers desc
+        }
+>>>malloy
+//Find percent of population with certain education level, see how it effects smoking habits. 
+run: smoking_data -> {
+    group_by: 
+        highest_qualification
+
+    aggregate: 
+        sample_count
+        # percent
+        percent_of_population is sample_count / all(sample_count)
+    nest: by_smoking is {
+        group_by: smoke
+        aggregate: 
+            sample_count
+            # percent
+            percent_of_smokers is sample_count / all(sample_count)}
+
+ 
+}
+>>>malloy
+//Does ethnicity effect smoking habits?
+# dashboard
+run: smoking_data -> {
+    group_by: 
+        ethnicity
+
+    aggregate: 
+        sample_count
+        # percent
+        percent_of_population is sample_count / all(sample_count)
+  
+    nest: by_smoking is {
+        group_by: smoke
+        aggregate: 
+            sample_count
+            # percent
+            percent_of_smokers is sample_count / all(sample_count)
+            order_by: percent_of_smokers}
+
+ 
+}
+>>>malloy
+// How does age affect smoking habits
+# bar_chart
+run: smoking_data -> {
+    group_by: 
+        age
+    aggregate: 
+        sample_count
+        # percent
+        percent_of_population is sample_count / all(sample_count)
+    }
+>>>malloy
+// How does age affect smoking habits
+# bar_chart
+run: smoking_data -> {
+    group_by: 
+        age
+    where: smoke = 'Yes'
+    aggregate: 
+        sample_count
+        # percent
+        percent_of_population is sample_count / all(sample_count)
+}
+>>>malloy
+//Find percent of population with certain education level, see how it effects smoking habits. 
+run: smoking_data -> {
+    group_by: 
+        marital_status
+
+    aggregate: 
+        sample_count
+        # percent
+        percent_of_population is sample_count / all(sample_count)
+    nest: by_smoking is {
+        group_by: smoke
+        aggregate: 
+            sample_count
+            # percent
+            percent_of_smokers is sample_count / all(sample_count)
+        order_by: percent_of_smokers}
+
+ 
+}
