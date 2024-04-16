@@ -1,6 +1,6 @@
 >>>malloy
 // Enter Malloy here
-source: smoking_data is duckdb.table('/Users/ethanbrouwer/Library/CloudStorage/OneDrive-GonzagaUniversity/Spring 2024/BMIS 444/Project1 Data/smoking.csv') extend {
+source: smoking_data is duckdb.table('./smoking.csv') extend {
     measure: 
         sample_count is count()
 
